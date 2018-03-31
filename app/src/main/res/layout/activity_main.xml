@@ -5,7 +5,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/touchLayout">
 
         <android.support.constraint.Guideline
             android:layout_width="wrap_content"
