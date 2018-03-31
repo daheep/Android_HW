@@ -16,10 +16,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private List<ImageView> diceImgList;
     private FloatingActionButton fab;
+    private static final int DICE_RANDOM_LIST[]= {
+        R.drawable.dice1, R.drawable.dice2, R.drawable.dice3,
+        R.drawable.dice4, R.drawable.dice5, R.drawable.dice6
+    };
 
     private View touchLayout;
 
@@ -53,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 goDiceGame();
-                Toast.makeText(getApplicationContext(), "Go Game!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -64,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
             // 애니메이션 효과
             ImageView iv = diceImgList.get(i);
             iv.startAnimation(getDiceAnimation());
+
+            // random 하게 값 찍히는것
+            int res = DICE_RANDOM_LIST[(int) (Math.random() * 6)];
+            iv.setImageResource(res);
         }
     }
 
