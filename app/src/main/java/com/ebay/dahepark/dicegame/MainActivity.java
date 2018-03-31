@@ -1,5 +1,8 @@
 package com.ebay.dahepark.dicegame;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,10 +24,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private List<ImageView> diceImgList;
     private FloatingActionButton fab;
-    private static final int DICE_RANDOM_LIST[]= {
-        R.drawable.dice1, R.drawable.dice2, R.drawable.dice3,
-        R.drawable.dice4, R.drawable.dice5, R.drawable.dice6
-    };
+    private List<AnimationDrawable> animList;
+    private List<Integer> resList;
 
     private View touchLayout;
 
@@ -66,16 +67,12 @@ public class MainActivity extends AppCompatActivity {
     private void goDiceGame(){
         for(int i = 0 ; i < DICE_VISIBLE_NUM; i++){
             // 애니메이션 효과
-            ImageView iv = diceImgList.get(i);
-            iv.startAnimation(getDiceAnimation());
-
-            // random 하게 값 찍히는것
-            int res = DICE_RANDOM_LIST[(int) (Math.random() * 6)];
-            iv.setImageResource(res);
+            ImageView diceIv = diceImgList.get(i);
+            diceIv.startAnimation(getDiceAnimation(diceIv));
         }
     }
 
-    private AnimationSet getDiceAnimation(){
+    private AnimationSet getDiceAnimation(final ImageView iv){
         // 애니메이션 효과 구현
         AnimationSet set = new AnimationSet(true);
         set.setInterpolator(new AccelerateInterpolator());
@@ -86,6 +83,26 @@ public class MainActivity extends AppCompatActivity {
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                 0.5f);
         rotateAnim.setDuration(2000);
+
+        rotateAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation){
+                for(AnimationDrawable drawable : animList) {
+                    drawable.stop();
+                    drawable.selectDrawable((int) (Math.random() * 6));
+                }
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation){
+                for(AnimationDrawable drawable : animList) {
+                    drawable.start();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation){}
+        });
 
         set.addAnimation(scaleAnim);
         set.addAnimation(rotateAnim);
@@ -98,10 +115,12 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < DICE_VISIBLE_NUM; i++){
             diceImgList.get(i).setVisibility(View.VISIBLE);
+            animList.add((AnimationDrawable) diceImgList.get(i).getBackground());
         }
     }
 
     private void allInvisibleIV(){
+        animList = new ArrayList<>();
         for(View iv : diceImgList){
             iv.setVisibility(View.INVISIBLE);
         }
